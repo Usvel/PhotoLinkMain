@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_place.view.*
 import kotlinx.android.synthetic.main.fragment_row.view.*
+import androidx.appcompat.app.AppCompatActivity
+
 
 class RowFragment : Fragment() {
 
@@ -20,7 +22,7 @@ class RowFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is RowInteractor){
+        if (context is RowInteractor) {
             rowInteractor = context
         }
     }
@@ -29,6 +31,8 @@ class RowFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_row, container, false)
+        (activity as AppCompatActivity?)!!.supportActionBar?.title =
+                view.context.getString(R.string.second_fragment)
         val adapter = RowAdapter()
         adapter.setOnClickListener(rowInteractor)
         view.recycler_row.adapter = adapter

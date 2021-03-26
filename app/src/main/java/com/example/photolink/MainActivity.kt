@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
     private var rowFragment = RowFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportActionBar?.title = getString(R.string.main_fragment)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         makeCurrentFragment(mainFragment)
@@ -27,14 +26,13 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
     }
 
     override fun onClickPlace(id: Int) {
-        supportActionBar?.title = getString(R.string.second_fragment)
         supportFragmentManager.beginTransaction().replace(R.id.nav_frame, rowFragment).addToBackStack(null).commit()
     }
 
     override fun onClickRow(id: Int) {
-        val new : List<Row> = PlaceData.getRow()
-        for (item in new){
-            if (item.id == id){
+        val new: List<Row> = PlaceData.getRow()
+        for (item in new) {
+            if (item.id == id) {
                 item.checkImage = true
             }
         }
