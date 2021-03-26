@@ -7,18 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_place.*
 import kotlinx.android.synthetic.main.fragment_place.view.*
 
 class PlaceFragment : Fragment() {
 
-    private val placeViewModel by lazy { ViewModelProviders.of(requireActivity()).get(PlaceViewModel::class.java) }
+    val placeViewModel by lazy { ViewModelProviders.of(requireActivity()).get(PlaceViewModel::class.java) }
 
     private var placeInteractor: PlaceInteractor? = null
 
@@ -46,6 +44,12 @@ class PlaceFragment : Fragment() {
                 adapter.refreshPlaces(it)
             }
         })
+        view.fragment_refresh_place.setOnRefreshListener {
+            placeInteractor?.onRefreshPlace()
+            (view.recycler_place.layoutManager as LinearLayoutManager).scrollToPosition(0)
+            view.fragment_refresh_place.isRefreshing = false
+        }
+
         return view
     }
 

@@ -29,13 +29,22 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         supportFragmentManager.beginTransaction().replace(R.id.nav_frame, rowFragment).addToBackStack(null).commit()
     }
 
+    override fun onRefreshPlace() {
+        mainFragment.placeViewModel.updateListPlace()
+    }
+
     override fun onClickRow(id: Int) {
-        val new: List<Row> = PlaceData.getRow()
+        val new: List<Row> = rowFragment.rowViewModel.placeList.value!!.toList()
         for (item in new) {
             if (item.id == id) {
                 item.checkImage = true
             }
         }
+        rowFragment.rowViewModel.updateListPlace(new)
+    }
+
+    override fun onRefreshRow() {
+        val new: List<Row> = PlaceData.getRow()
         rowFragment.rowViewModel.updateListPlace(new)
     }
 }

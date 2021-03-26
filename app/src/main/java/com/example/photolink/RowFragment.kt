@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_place.view.*
 import kotlinx.android.synthetic.main.fragment_row.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 
 
 class RowFragment : Fragment() {
@@ -44,6 +44,11 @@ class RowFragment : Fragment() {
                 adapter.refreshRow(it)
             }
         })
+        view.fragment_refresh_row.setOnRefreshListener {
+            rowInteractor?.onRefreshRow()
+            (view.recycler_row.layoutManager as LinearLayoutManager).scrollToPosition(0)
+            view.fragment_refresh_row.isRefreshing = false
+        }
         return view
     }
 }

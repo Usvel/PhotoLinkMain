@@ -11,7 +11,7 @@ class PlaceViewModel : ViewModel() {
     val placeList: LiveData<List<Place>> = _placeList
 
     init {
-        _placeList.value = PlaceData.getPlace()
+        _placeList.value = listOf()
     }
 
     fun updateListPlace() {
