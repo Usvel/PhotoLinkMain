@@ -1,7 +1,9 @@
 package com.example.photolink
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
 
     companion object {
         private const val REQUEST_CODE = 420
+        private const val PHOTO_PERMISSIONS_REQUEST_CODE = 2
     }
 
     private var idRow: Int? = null
@@ -57,7 +60,28 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
 
     override fun onClickRow(id: Int) {
         idRow = id
-        dispatchTakePictureIntent()
+
+        when {
+            checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                // доступ к камере разрешен, открываем камеру
+                dispatchTakePictureIntent()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                // доступ к камере запрещен, нужно объяснить зачем нам требуется разрешение
+                requestPermissions(
+                        arrayOf(Manifest.permission.CAMERA),
+                        PHOTO_PERMISSIONS_REQUEST_CODE
+                )
+            }
+            else -> {
+                // доступ к камере запрещен, запрашиваем разрешение
+                requestPermissions(
+                        arrayOf(Manifest.permission.CAMERA),
+                        PHOTO_PERMISSIONS_REQUEST_CODE
+                )
+            }
+
+        }
     }
 
     override fun onRefreshRow() {

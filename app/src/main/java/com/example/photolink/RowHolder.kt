@@ -17,6 +17,9 @@ class RowHolder(private val itemView: View): RecyclerView.ViewHolder(itemView) {
         if (row.imageBitmap != null) {
             itemView.image_row.setImageBitmap(row.imageBitmap)
         }
+        else {
+            itemView.image_row.setImageResource(R.mipmap.ic_launcher)
+        }
     }
 
     fun setListner(rowInteractor: RowInteractor?) {

@@ -12,7 +12,7 @@ object PlaceData {
     )
 
     fun getRow() = listOf(
-            Row(1, "Улица 1", "Описание 2", true, null),
+            Row(1, "Улица 1", "Описание 2", false, null),
             Row(2, "Улица 2", "Описание 2", false, null),
             Row(3, "Улица 3", "Описание 3", false, null),
             Row(4, "Улица 4", "Описание 3", false, null),
