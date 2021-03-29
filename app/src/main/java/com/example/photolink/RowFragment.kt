@@ -27,10 +27,9 @@ class RowFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_row, container, false)
         (activity as AppCompatActivity?)!!.supportActionBar?.title =
                 view.context.getString(R.string.second_fragment)
         val adapter = RowAdapter()
@@ -49,6 +48,11 @@ class RowFragment : Fragment() {
             (view.recycler_row.layoutManager as LinearLayoutManager).scrollToPosition(0)
             view.fragment_refresh_row.isRefreshing = false
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_row, container, false)
         return view
     }
 }

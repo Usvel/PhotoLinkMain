@@ -2,7 +2,9 @@ package com.example.photolink
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -19,7 +21,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
 
-    companion object{
+    companion object {
         private const val REQUEST_CODE = 420
     }
 
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
     private val mainFragment = PlaceFragment()
     private var rowFragment = RowFragment()
 
-  //  private val fragmentSize: Int = 0
+    //  private val fragmentSize: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,13 +84,15 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val takeImage = BitmapFactory.decodeFile(currentPhotoPath)
             val new: List<Row> = rowFragment.rowViewModel.placeList.value!!.toList()
-                for (item in new) {
-                    if (item.id == idRow) {
-                        item.imageBitmap = takeImage
-                        item.checkImage = true
-                    }
+            for (item in new) {
+                if (item.id == idRow) {
+                    val matrix = Matrix()
+                    matrix.postRotate(90F)
+                    item.imageBitmap = Bitmap.createBitmap(takeImage,0,0,takeImage.width, takeImage.height, matrix, true)
+                    item.checkImage = true
                 }
-                rowFragment.rowViewModel.updateListPlace(new)
+            }
+            rowFragment.rowViewModel.updateListPlace(new)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -118,4 +122,6 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
             }
         }
     }
-}
+
+
+    }
