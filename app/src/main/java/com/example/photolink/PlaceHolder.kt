@@ -13,10 +13,10 @@ class PlaceHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView
     fun bind(place: Place) {
         id = place.id
         itemView.name_place.text = place.name
-        if (place.image == null) {
+        if (place.urlImage == null) {
             itemView.image_place.setImageResource(R.drawable.ic_launcher_foreground)
         } else {
-            Picasso.with(itemView.context).load(place.image).fit().centerCrop().into(itemView.image_place)
+            Picasso.with(itemView.context).load(place.urlImage).fit().centerCrop().into(itemView.image_place)
         }
     }
 

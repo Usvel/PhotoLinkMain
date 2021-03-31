@@ -1,0 +1,27 @@
+{
+  "listSite": [
+    {
+      "ispoccess": false,
+      "name": "Город 1",
+      "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+      "listSite": [
+        {
+          "ispoccess": true,
+          "name": "Улича 1",
+          "description": "text 1",
+          "urLastImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+          "Listpath": [
+            {
+              "listPhoto": [
+                   "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+                    "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg"
+              ],
+              "description": "text group photo",
+              "data": "data"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

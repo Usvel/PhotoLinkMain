@@ -2,6 +2,7 @@ package com.example.photolink
 
 import android.Manifest
 import android.app.Activity
+import android.app.usage.UsageEvents
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,11 +12,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.photolink.Model.Place
 import com.example.photolink.Model.Row
+import com.example.photolink.api.RequestApiImpl
+import com.example.photolink.api.RequestRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -27,6 +33,12 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         private const val REQUEST_CODE = 420
         private const val PHOTO_PERMISSIONS_REQUEST_CODE = 2
     }
+
+    val viewModelNews: PlaceViewModel by lazy {
+        ViewModelProvider(this).get(PlaceViewModel::class.java)
+    }
+
+    private val newsRepository by lazy(UsageEvents.Event.NONE) { RequestRepository(RequestApiImpl(this)) }
 
     private var idRow: Int? = null
 
@@ -41,6 +53,24 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         makeCurrentFragment(mainFragment)
+        loadPlace()
+    }
+
+    fun loadPlace(){
+        newsRepository.loadListPlace().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { requst ->
+                    val mutableList = mutableListOf<Place>()
+                    for (i in requst.listSite){
+                            val place = Place(
+                                    i.id,
+                                    i.name,
+                                    i.urlImage
+                            )
+                        mutableList.add(place)
+                    }
+                    viewModelNews.setListPlace(mutableList)
+                }//.updateListPost(news as MutableList<Post>)}
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {
@@ -55,7 +85,8 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
     }
 
     override fun onRefreshPlace() {
-        mainFragment.placeViewModel.updateListPlace()
+        //mainFragment.placeViewModel.updateListPlace()
+        loadPlace()
     }
 
     override fun onClickRow(id: Int) {
@@ -142,6 +173,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_CODE)
+
                 }
             }
         }

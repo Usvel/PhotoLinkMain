@@ -17,4 +17,8 @@ class PlaceViewModel : ViewModel() {
     fun updateListPlace() {
         _placeList.value = PlaceData.getPlace()
     }
+
+    fun setListPlace(mutableList: MutableList<Place>) {
+        _placeList.value = mutableList
+    }
 }
