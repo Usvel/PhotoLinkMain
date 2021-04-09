@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
 
     private val mainFragment = PlaceFragment()
     private var rowFragment = RowFragment()
+    private var galleryActivity = GalleryActivity()
 
     //  private val fragmentSize: Int = 0
 
@@ -90,29 +91,30 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
     }
 
     override fun onClickRow(id: Int) {
-        idRow = id
-
-        when {
-            checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
-                // доступ к камере разрешен, открываем камеру
-                dispatchTakePictureIntent()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                // доступ к камере запрещен, нужно объяснить зачем нам требуется разрешение
-                requestPermissions(
-                        arrayOf(Manifest.permission.CAMERA),
-                        PHOTO_PERMISSIONS_REQUEST_CODE
-                )
-            }
-            else -> {
-                // доступ к камере запрещен, запрашиваем разрешение
-                requestPermissions(
-                        arrayOf(Manifest.permission.CAMERA),
-                        PHOTO_PERMISSIONS_REQUEST_CODE
-                )
-            }
-
-        }
+        supportFragmentManager.beginTransaction().replace(R.id.nav_frame, galleryActivity).addToBackStack(null).commit()
+//        idRow = id
+//
+//        when {
+//            checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+//                // доступ к камере разрешен, открываем камеру
+//                dispatchTakePictureIntent()
+//            }
+//            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+//                // доступ к камере запрещен, нужно объяснить зачем нам требуется разрешение
+//                requestPermissions(
+//                        arrayOf(Manifest.permission.CAMERA),
+//                        PHOTO_PERMISSIONS_REQUEST_CODE
+//                )
+//            }
+//            else -> {
+//                // доступ к камере запрещен, запрашиваем разрешение
+//                requestPermissions(
+//                        arrayOf(Manifest.permission.CAMERA),
+//                        PHOTO_PERMISSIONS_REQUEST_CODE
+//                )
+//            }
+//
+//        }
     }
 
     override fun onRefreshRow() {
@@ -178,6 +180,4 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
             }
         }
     }
-
-
     }
