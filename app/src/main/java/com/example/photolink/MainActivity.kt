@@ -56,17 +56,17 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         loadPlace()
     }
 
-    fun loadPlace(){
+    fun loadPlace() {
         newsRepository.loadListPlace().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { requst ->
                     val mutableList = mutableListOf<Place>()
-                    for (i in requst.listSite){
-                            val place = Place(
-                                    i.id,
-                                    i.name,
-                                    i.urlImage
-                            )
+                    for (i in requst.listSite) {
+                        val place = Place(
+                                i.id,
+                                i.name,
+                                i.urlImage
+                        )
                         mutableList.add(place)
                     }
                     viewModelNews.setListPlace(mutableList)
@@ -91,28 +91,8 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
 
     override fun onClickRow(id: Int) {
         idRow = id
+        supportFragmentManager.beginTransaction().replace(R.id.nav_frame, CameraFragment()).addToBackStack(null).commit()
 
-        when {
-            checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
-                // доступ к камере разрешен, открываем камеру
-                dispatchTakePictureIntent()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                // доступ к камере запрещен, нужно объяснить зачем нам требуется разрешение
-                requestPermissions(
-                        arrayOf(Manifest.permission.CAMERA),
-                        PHOTO_PERMISSIONS_REQUEST_CODE
-                )
-            }
-            else -> {
-                // доступ к камере запрещен, запрашиваем разрешение
-                requestPermissions(
-                        arrayOf(Manifest.permission.CAMERA),
-                        PHOTO_PERMISSIONS_REQUEST_CODE
-                )
-            }
-
-        }
     }
 
     override fun onRefreshRow() {
@@ -120,64 +100,4 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor {
         rowFragment.rowViewModel.updateListPlace(new)
     }
 
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-                "JPEG_${timeStamp}_", /* prefix */
-                ".jpg", /* suffix */
-                storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val takeImage = BitmapFactory.decodeFile(currentPhotoPath)
-            val new: List<Row> = rowFragment.rowViewModel.placeList.value!!.toList()
-            for (item in new) {
-                if (item.id == idRow) {
-                    val matrix = Matrix()
-                    matrix.postRotate(90F)
-                    item.imageBitmap = Bitmap.createBitmap(takeImage,0,0,takeImage.width, takeImage.height, matrix, true)
-                    item.checkImage = true
-                }
-            }
-            rowFragment.rowViewModel.updateListPlace(new)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun dispatchTakePictureIntent() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    //...
-                    null
-                }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                            this,
-                            "com.example.android.fileprovider",
-                            it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_CODE)
-
-                }
-            }
-        }
-    }
-
-
-    }
+}
