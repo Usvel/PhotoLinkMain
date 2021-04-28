@@ -1,6 +1,6 @@
 package com.example.photolink
 
 interface RowInteractor {
-    fun onClickRow(id : Int)
+    fun onClickRow(name : String)
     fun onRefreshRow()
 }

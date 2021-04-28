@@ -1,27 +1,140 @@
-{
-  "listSite": [
-    {
-      "ispoccess": false,
-      "name": "Город 1",
-      "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
-      "listSite": [
-        {
-          "ispoccess": true,
-          "name": "Улича 1",
-          "description": "text 1",
-          "urLastImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
-          "Listpath": [
-            {
-              "listPhoto": [
-                   "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
-                    "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg"
-              ],
-              "description": "text group photo",
-              "data": "data"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "ispoccess": true,
+    "name": "Город 1",
+    "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+    "listSite": [
+      {
+        "name": "Улича 1",
+        "description": "text 1",
+        "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+        "Listpath": [
+          {
+            "listPhoto": [
+              "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+              "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg"
+            ],
+            "description": "text group photo",
+            "data": "data"
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "name": "Улица 1",
+        "description": "Описание 1"
+      },
+      {
+        "id": 2,
+        "name": "Улица 2",
+        "description": "Описание 2"
+      },
+      {
+        "id": 3,
+        "name": "Улица 3",
+        "description": "Описание 3"
+      },
+      {
+        "id": 4,
+        "name": "Улица 4",
+        "description": "Описание 4"
+      },
+      {
+        "id": 5,
+        "name": "Улица 5",
+        "description": "Описание 5"
+      },
+      {
+        "id": 6,
+        "name": "Улица 6",
+        "description": "Описание 6"
+      },
+      {
+        "id": 7,
+        "name": "Улица 7",
+        "description": "Описание 7"
+      },
+      {
+        "id": 8,
+        "name": "Улица 8",
+        "description": "Описание 8"
+      },
+      {
+        "id": 9,
+        "name": "Улица 9",
+        "description": "Описание 9"
+      },
+      {
+        "id": 10,
+        "name": "Улица 10",
+        "description": "Описание 10"
+      },
+      {
+        "id": 11,
+        "name": "Улица 11",
+        "description": "Описание 11"
+      },
+      {
+        "id": 12,
+        "name": "Улица 12",
+        "description": "Описание 12"
+      },
+      {
+        "id": 13,
+        "name": "Улица 13",
+        "description": "Описание 13"
+      },
+      {
+        "id": 14,
+        "name": "Улица 14",
+        "description": "Описание 14"
+      },
+      {
+        "id": 15,
+        "name": "Улица 15",
+        "description": "Описание 15"
+      }
+    ]
+  },
+  {
+    "ispoccess": false,
+    "name": "Регион",
+    "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+    "listSite": [
+      {
+        "ispoccess": true,
+        "name": "Город 1",
+        "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+        "listSite": [
+          {
+            "name": "Улица 1",
+            "description": "Описание 1",
+            "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg"
+          },
+          {
+            "id": 1,
+            "name": "Улица 2",
+            "description": "Описание 2"
+          }
+        ]
+      },
+      {
+        "ispoccess": true,
+        "name": "Город 2",
+        "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg",
+        "listSite": [
+          {
+            "name": "Улица 1",
+            "description": "Описание 1",
+            "urlImage": "https://cdnimg.rg.ru/img/content/173/40/05/iStock-1124383135_d_850.jpg"
+          },
+          {
+            "id": 1,
+            "name": "Улица 2",
+            "description": "Описание 2"
+          }
+        ]
+      }
+    ]
+  }
+]

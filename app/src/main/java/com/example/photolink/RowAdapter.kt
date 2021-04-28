@@ -3,11 +3,11 @@ package com.example.photolink
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.photolink.Model.Row
+import com.example.photolink.Model.IteamPlace
 
 class RowAdapter: RecyclerView.Adapter<RowHolder>() {
 
-    private var rowList: List<Row> = ArrayList()
+    private var rowList: List<IteamPlace> = ArrayList()
     private var rowInteractor: RowInteractor? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowHolder {
@@ -27,7 +27,7 @@ class RowAdapter: RecyclerView.Adapter<RowHolder>() {
         this.rowInteractor = rowInteractor
     }
 
-    fun refreshRow(row: List<Row>){
+    fun refreshRow(row: List<IteamPlace>){
         this.rowList = row
         notifyDataSetChanged()
     }

@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_row.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.photolink.Model.IteamPlace
 
 
 class RowFragment : Fragment() {
 
-    val rowViewModel by lazy { ViewModelProviders.of(requireActivity()).get(RowViewModel::class.java) }
-
+    private var list: List<IteamPlace>? = null
+    private var name: String? = null
     private var rowInteractor: RowInteractor? = null
 
     override fun onAttach(context: Context) {
@@ -27,22 +28,41 @@ class RowFragment : Fragment() {
         }
     }
 
+    companion object {
+        private const val ARG_MESSAGE_ROW = "listRow"
+        private const val ARG_MESSAGE_ROW_NAME = "nameROW"
+        fun newInstance(list: ArrayList<IteamPlace>, name: String): RowFragment {
+            val fragment = RowFragment()
+            val arguments = Bundle()
+            arguments.putParcelableArrayList(ARG_MESSAGE_ROW, list)
+            arguments.putString(ARG_MESSAGE_ROW_NAME, name)
+            fragment.arguments = arguments
+            return fragment
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Inflate the layout for this fragment
-        (activity as AppCompatActivity?)!!.supportActionBar?.title =
-                view.context.getString(R.string.second_fragment)
+        name.let {
+            if (it != null) {
+                (activity as AppCompatActivity?)!!.supportActionBar?.title = name
+            }
+        }
+
         val adapter = RowAdapter()
         adapter.setOnClickListener(rowInteractor)
         view.recycler_row.adapter = adapter
         val dividerItemDecoration = DividerItemDecoration(view.context, RecyclerView.VERTICAL)
         dividerItemDecoration.setDrawable(view.context.getDrawable(R.drawable.divider_drawable)!!)
         view.recycler_row.addItemDecoration(dividerItemDecoration)
-        rowViewModel.placeList.observe(viewLifecycleOwner, {
-            it?.let {
+
+        list.let {
+            if (it != null) {
                 adapter.refreshRow(it)
             }
-        })
+        }
+
         view.fragment_refresh_row.setOnRefreshListener {
             rowInteractor?.onRefreshRow()
             (view.recycler_row.layoutManager as LinearLayoutManager).scrollToPosition(0)
@@ -53,6 +73,8 @@ class RowFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_row, container, false)
+        list = requireArguments().getParcelableArrayList(ARG_MESSAGE_ROW)
+        name = requireArguments().getString(ARG_MESSAGE_ROW_NAME)
         return view
     }
 }

@@ -3,11 +3,11 @@ package com.example.photolink
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.photolink.Model.Place
+import com.example.photolink.Model.IteamPlace
 
 class PlaceAdapter : RecyclerView.Adapter<PlaceHolder>() {
 
-    private var placeList: List<Place> = ArrayList()
+    private var placeList: List<IteamPlace> = ArrayList()
     private var placeInteractor: PlaceInteractor? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceHolder {
@@ -23,7 +23,7 @@ class PlaceAdapter : RecyclerView.Adapter<PlaceHolder>() {
         return placeList.size
     }
 
-    fun refreshPlaces(places: List<Place>){
+    fun refreshPlaces(places: List<IteamPlace>){
         this.placeList = places
         notifyDataSetChanged()
     }
