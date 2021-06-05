@@ -15,6 +15,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
@@ -27,6 +28,8 @@ typealias LumaListener = (luma: Double) -> Unit
 
 class CameraFragment : Fragment() {
 
+    private var cameraInteractor: CameraInteractor? = null
+
     private var imageCapture: ImageCapture? = null
 
     private lateinit var outputDirectory: File
@@ -37,6 +40,9 @@ class CameraFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         safeContext = context
+        if (context is CameraInteractor) {
+            cameraInteractor = context
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,8 +93,9 @@ class CameraFragment : Fragment() {
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                 val savedUri = Uri.fromFile(photoFile)
                 val msg = "Photo capture succeeded: $savedUri"
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 Log.d(TAG, msg)
+                cameraInteractor?.onOpenDescription(savedUri)
             }
         })
     }
