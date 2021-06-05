@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     fun loadPlace() {
         val disposable = newsRepository.loadListGson().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ requst ->
+                .subscribe({ requst ->
                     Log.d("RX", requst.toString())
                     val startFragment = PlaceFragment.newInstance(requst as ArrayList<IteamPlace>, getString(R.string.main_fragment))
                     makeCurrentFragment(startFragment)
@@ -116,14 +116,19 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                     } else {
                         AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(str).show()
                     }
+                    file.delete()
                 }, {
                     AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(it.message).show()
+                    file.delete()
                 })
         compositeDisposable.add(disposable)
         onBackPressed()
     }
 
     override fun onOpenDescription(fileUri: Uri) {
+        mainViewModel.listURI.value?.forEach {
+            it.toFile().delete()
+        }
         mainViewModel.listURI.value = ArrayList()
         mainViewModel.listURI.value?.add(fileUri)
         supportFragmentManager.beginTransaction().replace(R.id.nav_frame, DescriptionFragment()).addToBackStack(null).commit()
@@ -131,7 +136,10 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     override fun onStop() {
-        super.onStop()
+        mainViewModel.listURI.value?.forEach {
+            it.toFile().delete()
+        }
         compositeDisposable.clear()
+        super.onStop()
     }
 }
