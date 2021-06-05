@@ -44,11 +44,16 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     fun loadPlace() {
         val disposable = newsRepository.loadListGson().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { requst ->
+                .subscribe ({ requst ->
                     Log.d("RX", requst.toString())
                     val startFragment = PlaceFragment.newInstance(requst as ArrayList<IteamPlace>, getString(R.string.main_fragment))
                     makeCurrentFragment(startFragment)
-                }//.updateListPost(news as MutableList<Post>)}
+                }, {
+                    AlertDialog.Builder(this).setMessage("Ошибка загрузки").setMessage(it.message).show()
+                    val startFragment = PlaceFragment.newInstance(arrayListOf(), getString(R.string.main_fragment))
+                    makeCurrentFragment(startFragment)
+                }
+                )//.updateListPost(news as MutableList<Post>)}
         compositeDisposable.add(disposable)
     }
 
