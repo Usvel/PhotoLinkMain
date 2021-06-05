@@ -1,0 +1,35 @@
+[
+  {
+    "ispoccess": true,
+    "listSite": [
+      {
+        "Listpath": [],
+        "description": "",
+        "name": "jsdfjs.dsfs",
+        "urlImage": null
+      },
+      {
+        "Listpath": [
+          {
+            "date": "30.04.2020",
+            "descritpion": "",
+            "listPhoto": [
+              "root/\u0412\u043b\u0433/\u0425\u043e\u0440\u043e\u0448\u0435\u0432\u0430/30.04.2020/photomode_24122020_022415.png"
+            ]
+          }
+        ],
+        "description": "\u0420\u00ad\u0421\u201a\u0420\u0455 \u0421\u0453\u0420\u00bb\u0420\u0451\u0421\u2020\u0420\u00b0 \u0421\u2026\u0420\u0455\u0421\u0402\u0420\u0455\u0421\u20ac\u0420\u00b5\u0420\u0406\u0420\u00b0\n",
+        "name": "\u0425\u043e\u0440\u043e\u0448\u0435\u0432\u0430",
+        "urlImage": null
+      }
+    ],
+    "name": "\u0412\u043b\u0433",
+    "urlImage": null
+  },
+  {
+    "ispoccess": false,
+    "listSite": [],
+    "name": "\u041c\u043e\u0441\u043a\u0432\u0430",
+    "urlImage": null
+  }
+]
