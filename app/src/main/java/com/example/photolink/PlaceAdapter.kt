@@ -10,12 +10,14 @@ class PlaceAdapter : RecyclerView.Adapter<PlaceHolder>() {
     private var placeList: List<IteamPlace> = ArrayList()
     private var placeInteractor: PlaceInteractor? = null
 
+    lateinit var baseUrl: String
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceHolder {
         return PlaceHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_place, parent, false))
     }
 
     override fun onBindViewHolder(holder: PlaceHolder, position: Int) {
-        holder.bind(placeList[position])
+        holder.bind(placeList[position], baseUrl)
         holder.setListner(placeInteractor)
     }
 

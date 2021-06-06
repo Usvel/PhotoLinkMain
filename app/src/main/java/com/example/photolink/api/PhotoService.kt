@@ -12,7 +12,7 @@ interface PhotoService {
     fun getUserInfo(): Single<List<IteamPlace>>
 
     @Multipart
-    @POST("/imageset{id}/")
+    @POST("/imageset{id}")
     fun uploadPhoto(
             @Path("id") string: String,
             @Part("description") description : RequestBody,

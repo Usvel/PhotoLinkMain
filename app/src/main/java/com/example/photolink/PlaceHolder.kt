@@ -12,7 +12,7 @@ class PlaceHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView
     private var list: List<IteamPlace>? = null
     private var type: Boolean? = null
 
-    fun bind(place: IteamPlace) {
+    fun bind(place: IteamPlace, baseURL: String) {
         itemView.name_place.text = place.name
         list = place.listSite
         type = place.ispoccess
@@ -20,7 +20,7 @@ class PlaceHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView
         if (place.urlImage == null) {
             itemView.image_place.setImageResource(R.drawable.ic_launcher_foreground)
         } else {
-            Picasso.with(itemView.context).load(RequestApiImpl.BASE_URL + place.urlImage).fit().centerCrop().into(itemView.image_place)
+            Picasso.with(itemView.context).load("http://${baseURL}${place.urlImage}").fit().centerCrop().into(itemView.image_place)
         }
     }
 

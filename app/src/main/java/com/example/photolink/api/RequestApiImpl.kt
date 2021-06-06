@@ -1,6 +1,7 @@
 package com.example.photolink.api
 
 import android.content.Context
+import android.provider.ContactsContract
 import android.util.Log
 import com.example.photolink.Model.IteamPlace
 import com.google.gson.Gson
@@ -20,20 +21,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.net.URI
 
 class RequestApiImpl(
         val context: Context
 ) : RequestApi {
 
-    companion object {
-        val BASE_URL = "http://100.74.30.251:5000"
-    }
-
-
-    val httpLoggingInterceptor = HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
-    val client = OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor).build()
-    val retrofit = Retrofit.Builder().client(client).baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
-    val photoService = retrofit.create(PhotoService::class.java)
+    private val httpLoggingInterceptor = HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
+    private val client = OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor).build()
+   // private var retrofit = Retrofit.Builder().client(client).baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
+   private lateinit var retrofit:Retrofit
+   // private var photoService = retrofit.create(PhotoService::class.java)
+    private lateinit var photoService:PhotoService
 
     override fun PlaceList(): Single<List<IteamPlace>> {
         val myJson: String = inputStreamToString(context.assets.open("json.json")).toString()
@@ -78,5 +77,11 @@ class RequestApiImpl(
         } catch (e: IOException) {
             null
         }
+    }
+
+    override fun updateRetrofit(baseURI: String){
+        Log.d("Retrofit updated", baseURI)
+        retrofit = Retrofit.Builder().client(client).baseUrl("http://${baseURI}").addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
+        photoService = retrofit.create(PhotoService::class.java)
     }
 }

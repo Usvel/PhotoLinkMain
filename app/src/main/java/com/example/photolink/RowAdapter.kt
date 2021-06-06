@@ -10,12 +10,14 @@ class RowAdapter: RecyclerView.Adapter<RowHolder>() {
     private var rowList: List<IteamPlace> = ArrayList()
     private var rowInteractor: RowInteractor? = null
 
+    lateinit var baseUrl: String
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowHolder {
         return RowHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_row, parent, false))
     }
 
     override fun onBindViewHolder(holder: RowHolder, position: Int) {
-        holder.bind(rowList[position])
+        holder.bind(rowList[position], baseUrl)
         holder.setListner(rowInteractor)
     }
 
