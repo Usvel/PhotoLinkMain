@@ -27,11 +27,6 @@ class RequestApiImpl(
         val context: Context
 ) : RequestApi {
 
-    companion object {
-        val BASE_URL = "http://100.74.30.251:5000"
-    }
-
-
     private val httpLoggingInterceptor = HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
     private val client = OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor).build()
    // private var retrofit = Retrofit.Builder().client(client).baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()

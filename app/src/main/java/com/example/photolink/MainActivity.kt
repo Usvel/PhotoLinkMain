@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                 .subscribe({ requst ->
                     Log.d("RX", requst.toString())
                     val startFragment = PlaceFragment.newInstance(requst as ArrayList<IteamPlace>, getString(R.string.main_fragment))
+                    mainViewModel.startMain()
                     makeCurrentFragment(startFragment)
                 }, {
                     AlertDialog.Builder(this).setMessage("Ошибка загрузки").setMessage(it.message).show()
@@ -88,15 +89,20 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        Log.d("Place", mainViewModel.lastName.value.toString())
-        if (!supportFragmentManager.fragments.isEmpty()) {
-            if (!(supportFragmentManager.fragments.last() is CameraFragment)) {
-                mainViewModel.removePlace()
-            }
+        var flag = true
+        if (supportFragmentManager.fragments.last() is ServerSettings) {
+            flag = false
         }
-        Log.d("Place", mainViewModel.namePalace.value)
-
+        super.onBackPressed()
+        if (flag) {
+            Log.d("Place-valueList", mainViewModel.lastName.value.toString())
+            if (!supportFragmentManager.fragments.isEmpty()) {
+                if (!(supportFragmentManager.fragments.last() is CameraFragment)) {
+                    mainViewModel.removePlace()
+                }
+            }
+            Log.d("Place-value", mainViewModel.namePalace.value)
+        }
     }
 
     override fun onClickPlace(list: List<IteamPlace>, type: Boolean, name: String) {
