@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,10 @@ import kotlinx.android.synthetic.main.fragment_place.*
 import kotlinx.android.synthetic.main.fragment_place.view.*
 
 class PlaceFragment : Fragment() {
+
+    val mainViewModel: MainLiveDate by lazy {
+        ViewModelProvider(requireActivity()).get(MainLiveDate::class.java)
+    }
 
     private var list: List<IteamPlace>? = null
     private var name: String? = null
@@ -54,6 +59,9 @@ class PlaceFragment : Fragment() {
 
         val adapter = PlaceAdapter()
         adapter.setOnClickListener(placeInteractor)
+        if (mainViewModel.baseURI.value != null) {
+            adapter.baseUrl = mainViewModel.baseURI.value!!
+        }
         view.recycler_place.adapter = adapter
         val dividerItemDecoration = DividerItemDecoration(view.context, RecyclerView.VERTICAL)
         dividerItemDecoration.setDrawable(view.context.getDrawable(R.drawable.divider_drawable)!!)

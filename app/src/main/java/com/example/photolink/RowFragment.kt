@@ -11,11 +11,16 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_row.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photolink.Model.IteamPlace
 
 
 class RowFragment : Fragment() {
+
+    val mainViewModel: MainLiveDate by lazy {
+        ViewModelProvider(requireActivity()).get(MainLiveDate::class.java)
+    }
 
     private var list: List<IteamPlace>? = null
     private var name: String? = null
@@ -52,6 +57,9 @@ class RowFragment : Fragment() {
 
         val adapter = RowAdapter()
         adapter.setOnClickListener(rowInteractor)
+        if (mainViewModel.baseURI.value != null){
+            adapter.baseUrl = mainViewModel.baseURI.value!!
+        }
         view.recycler_row.adapter = adapter
         val dividerItemDecoration = DividerItemDecoration(view.context, RecyclerView.VERTICAL)
         dividerItemDecoration.setDrawable(view.context.getDrawable(R.drawable.divider_drawable)!!)

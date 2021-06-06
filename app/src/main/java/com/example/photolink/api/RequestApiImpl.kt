@@ -86,7 +86,7 @@ class RequestApiImpl(
 
     override fun updateRetrofit(baseURI: String){
         Log.d("Retrofit updated", baseURI)
-        retrofit = Retrofit.Builder().client(client).baseUrl("http://$baseURI").addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
+        retrofit = Retrofit.Builder().client(client).baseUrl("http://${baseURI}").addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
         photoService = retrofit.create(PhotoService::class.java)
     }
 }

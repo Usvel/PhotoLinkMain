@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:autofillHints="Поиск"
                 android:background="@color/white"
-                android:hint="Например:100.74.30.251:5000"
+                android:hint="100.74.30.251:5000"
                 android:singleLine="true"
                 android:textSize="12sp"
                 android:textColor="@color/black" />

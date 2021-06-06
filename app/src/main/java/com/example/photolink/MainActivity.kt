@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.settingsURI -> {
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
 
     private fun makeCurrentFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.nav_frame, fragment)
+            replace(R.id.nav_frame, fragment)
             commit()
         }
     }
@@ -89,8 +90,13 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     override fun onBackPressed() {
         super.onBackPressed()
         Log.d("Place", mainViewModel.lastName.value.toString())
-        mainViewModel.removePlace()
+        if (!supportFragmentManager.fragments.isEmpty()) {
+            if (!(supportFragmentManager.fragments.last() is CameraFragment)) {
+                mainViewModel.removePlace()
+            }
+        }
         Log.d("Place", mainViewModel.namePalace.value)
+
     }
 
     override fun onClickPlace(list: List<IteamPlace>, type: Boolean, name: String) {
@@ -134,7 +140,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                     val str = it.string()
                     Log.d("Body", str)
                     if (str.contains("file uploaded successfully")) {
-                        Toast.makeText(this, "Фото успешно загруженны", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Фото успешно загруженно", Toast.LENGTH_SHORT).show()
                     } else {
                         AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(str).show()
                     }

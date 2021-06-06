@@ -17,7 +17,7 @@ class MainLiveDate : ViewModel() {
     init {
         _namePlace.value = ""
         lastName.value = ArrayList()
-        _baseURI.value = "100.74.30.251:5000"
+        _baseURI.value = "100.74.41.42:5000"
     }
 
     fun addPlace(name: String) {

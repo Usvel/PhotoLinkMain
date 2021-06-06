@@ -1,6 +1,7 @@
 package com.example.photolink
 
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photolink.Model.IteamPlace
 import com.example.photolink.api.RequestApiImpl
@@ -12,7 +13,7 @@ class RowHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     private var name: String? = null
 
-    fun bind(row: IteamPlace) {
+    fun bind(row: IteamPlace,baseUrl: String) {
 
         name = row.name
 
@@ -22,7 +23,7 @@ class RowHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView) 
         if (row.urlImage == null) {
             itemView.image_row.setImageResource(R.drawable.ic_launcher_foreground)
         } else {
-            Picasso.with(itemView.context).load(RequestApiImpl.BASE_URL + row.urlImage).fit().centerCrop().into(itemView.image_row)
+            Picasso.with(itemView.context).load("http://${baseUrl}${row.urlImage}").fit().centerCrop().into(itemView.image_row)
         }
 
     }
