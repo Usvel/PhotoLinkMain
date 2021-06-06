@@ -5,12 +5,15 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.photolink.Model.IteamPlace
 import com.example.photolink.api.RequestApiImpl
@@ -19,10 +22,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_description.*
 import okhttp3.ResponseBody
 import java.io.File
 
-class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor {
+class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor, ServerSettingsInteractor {
 
     private val newsRepository by lazy(UsageEvents.Event.NONE) { RequestRepository(RequestApiImpl(this)) }
     private val compositeDisposable = CompositeDisposable()
@@ -32,12 +36,31 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     //  private val fragmentSize: Int = 0
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the main_menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            R.id.settingsURI -> {
+                val fragment = ServerSettings()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_frame, fragment).addToBackStack(null).commit()
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //makeCurrentFragment(mainFragment)
-        loadPlace()
+        mainViewModel.baseURI.observe(this, Observer {
+            newsRepository.updateURI(it)
+            loadPlace()
+        })
     }
 
 
@@ -50,8 +73,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                     makeCurrentFragment(startFragment)
                 }, {
                     AlertDialog.Builder(this).setMessage("Ошибка загрузки").setMessage(it.message).show()
-                    val startFragment = PlaceFragment.newInstance(arrayListOf(), getString(R.string.main_fragment))
-                    makeCurrentFragment(startFragment)
+
                 }
                 )//.updateListPost(news as MutableList<Post>)}
         compositeDisposable.add(disposable)
@@ -141,5 +163,9 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         }
         compositeDisposable.clear()
         super.onStop()
+    }
+
+    override fun closeServerSettings() {
+        onBackPressed()
     }
 }

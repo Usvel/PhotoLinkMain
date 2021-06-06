@@ -10,12 +10,14 @@ class MainLiveDate : ViewModel() {
     private val _namePlace: MutableLiveData<String> = MutableLiveData()
     val lastName: MutableLiveData<MutableList<String>> = MutableLiveData()
     val listURI: MutableLiveData<MutableList<Uri>> = MutableLiveData()
-
+    private val _baseURI: MutableLiveData<String> = MutableLiveData()
+    val baseURI:  LiveData<String> = _baseURI
     val namePalace: LiveData<String> = _namePlace
 
     init {
         _namePlace.value = ""
         lastName.value = ArrayList()
+        _baseURI.value = "100.74.30.251:5000"
     }
 
     fun addPlace(name: String) {
@@ -33,5 +35,9 @@ class MainLiveDate : ViewModel() {
     fun startMain(){
         _namePlace.value = ""
         lastName.value = ArrayList()
+    }
+
+    fun setBaseURI(baseURI: String){
+        _baseURI.value = baseURI
     }
 }

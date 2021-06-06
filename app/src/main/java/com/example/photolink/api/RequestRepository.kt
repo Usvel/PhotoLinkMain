@@ -19,4 +19,8 @@ class RequestRepository(
     fun saveFile(string: String, descriptioin: String, file: List<File>): Single<ResponseBody> {
         return api.saveImage(string, descriptioin, file)
     }
+
+    fun updateURI(baseURI: String){
+        api.updateRetrofit(baseURI)
+    }
 }
