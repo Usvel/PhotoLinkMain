@@ -1,7 +1,6 @@
 package com.example.photolink
 
 import android.app.usage.UsageEvents
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -21,12 +20,17 @@ import com.example.photolink.api.RequestRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_description.*
-import okhttp3.ResponseBody
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.FileInputStream
+
 
 class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor, ServerSettingsInteractor {
+
+    companion object {
+        private val FILE_NAME = "content.txt"
+    }
 
     private val newsRepository by lazy(UsageEvents.Event.NONE) { RequestRepository(RequestApiImpl(this)) }
     private val compositeDisposable = CompositeDisposable()
@@ -58,7 +62,11 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //makeCurrentFragment(mainFragment)
+        if (openText() != null) {
+            mainViewModel.setBaseURI(openText()!!)
+        }
         mainViewModel.baseURI.observe(this, Observer {
+            saveText(it)
             newsRepository.updateURI(it)
             loadPlace()
         })
@@ -179,5 +187,44 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
 
     override fun closeServerSettings() {
         onBackPressed()
+    }
+
+    // открытие файла
+    fun openText():String? {
+        var fin: FileInputStream? = null
+        var text: String? = null
+        try {
+            fin = openFileInput(FILE_NAME)
+            val bytes = ByteArray(fin.available())
+            fin.read(bytes)
+            text = String(bytes)
+        } catch (ex: IOException) {
+            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+        } finally {
+            try {
+                if (fin != null) fin.close()
+            } catch (ex: IOException) {
+                Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        return text
+    }
+
+    // сохранение файла
+    fun saveText(text: String) {
+        var fos: FileOutputStream? = null
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE)
+            fos.write(text.toByteArray())
+            Toast.makeText(this, "Файл сохранен", Toast.LENGTH_SHORT).show()
+        } catch (ex: IOException) {
+            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+        } finally {
+            try {
+                if (fos != null) fos.close()
+            } catch (ex: IOException) {
+                Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
