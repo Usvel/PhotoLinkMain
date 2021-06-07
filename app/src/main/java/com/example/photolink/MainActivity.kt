@@ -216,7 +216,6 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         try {
             fos = openFileOutput(FILE_NAME, MODE_PRIVATE)
             fos.write(text.toByteArray())
-            Toast.makeText(this, "Файл сохранен", Toast.LENGTH_SHORT).show()
         } catch (ex: IOException) {
             Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
         } finally {
