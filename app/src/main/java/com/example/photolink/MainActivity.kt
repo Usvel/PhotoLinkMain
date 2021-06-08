@@ -34,6 +34,7 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 
 import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
 
 
 class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor, ServerSettingsInteractor {
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
             }
         }
         mainViewModel.baseURI.observe(this, Observer {
+            supportFragmentManager.popBackStack()
             if (hasWritePermissions()) {
                 saveText(it)
             }
@@ -113,18 +115,22 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
 
     override fun onBackPressed() {
         var flag = true
-        if (supportFragmentManager.fragments.last() is ServerSettings) {
-            flag = false
-        }
-        super.onBackPressed()
-        if (flag) {
-            Log.d("Place-valueList", mainViewModel.lastName.value.toString())
-            if (!supportFragmentManager.fragments.isEmpty()) {
-                if (!(supportFragmentManager.fragments.last() is CameraFragment)) {
-                    mainViewModel.removePlace()
-                }
+        if (!supportFragmentManager.fragments.isEmpty()) {
+            if (supportFragmentManager.fragments.last() is ServerSettings) {
+                flag = false
             }
-            Log.d("Place-value", mainViewModel.namePalace.value)
+            super.onBackPressed()
+            if (flag) {
+                Log.d("Place-valueList", mainViewModel.lastName.value.toString())
+                if (!supportFragmentManager.fragments.isEmpty()) {
+                    if (!(supportFragmentManager.fragments.last() is CameraFragment)) {
+                        mainViewModel.removePlace()
+                    }
+                }
+                Log.d("Place-value", mainViewModel.namePalace.value)
+            }
+        } else {
+            super.onBackPressed()
         }
     }
 
@@ -163,23 +169,28 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         val arrayList = ArrayList<File>()
         arrayList.add(file)
         Log.d("PlaceOut", mainViewModel.namePalace.value)
-        val disposable = newsRepository.saveFile(mainViewModel.namePalace.value!!, description, arrayList).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    val str = it.string()
-                    Log.d("Body", str)
-                    if (str.contains("file uploaded successfully")) {
-                        Toast.makeText(this, "Фото успешно загруженно", Toast.LENGTH_SHORT).show()
-                    } else {
-                        AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(str).show()
-                    }
-                    file.delete()
-                }, {
-                    AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(it.message).show()
-                    file.delete()
-                })
-        compositeDisposable.add(disposable)
-        onBackPressed()
+        requestAppPermissions()
+        if (hasReadPermissions() && hasWritePermissions()) {
+            val disposable = newsRepository.saveFile(mainViewModel.namePalace.value!!, description, arrayList).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        val str = it.string()
+                        Log.d("Body", str)
+                        if (str.contains("file uploaded successfully")) {
+                            Toast.makeText(this, "Фото успешно загруженно", Toast.LENGTH_SHORT).show()
+                        } else {
+                            AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(str).show()
+                        }
+                        file.delete()
+                    }, {
+                        AlertDialog.Builder(this).setTitle("Ошибка закгрузки").setMessage(it.message).show()
+                        file.delete()
+                    })
+            compositeDisposable.add(disposable)
+            onBackPressed()
+        } else {
+            AlertDialog.Builder(this).setTitle("Ошибка доступа").setMessage("Нужен доступ к файлам").show()
+        }
     }
 
     override fun onOpenDescription(fileUri: Uri) {
@@ -190,6 +201,10 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         mainViewModel.listURI.value?.add(fileUri)
         supportFragmentManager.beginTransaction().replace(R.id.nav_frame, DescriptionFragment()).addToBackStack(null).commit()
 
+    }
+
+    override fun onBack() {
+        onBackPressed()
     }
 
     override fun onStop() {
@@ -243,12 +258,10 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     private fun requestAppPermissions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return
-        }
         if (hasReadPermissions() && hasWritePermissions()) {
             return
         }
+
         ActivityCompat.requestPermissions(this, arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
