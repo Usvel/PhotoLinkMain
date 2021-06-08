@@ -1,5 +1,6 @@
 package com.example.photolink
 
+import android.Manifest
 import android.app.usage.UsageEvents
 import android.net.Uri
 import android.os.Bundle
@@ -24,12 +25,22 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.FileInputStream
+import android.app.Activity
+
+import androidx.core.app.ActivityCompat
+
+import android.content.pm.PackageManager
+
+import androidx.core.content.ContextCompat
+
+import android.os.Build
 
 
 class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor, ServerSettingsInteractor {
 
     companion object {
         private val FILE_NAME = "content.txt"
+        private val REQUEST_WRITE_STORAGE_REQUEST_CODE = 45
     }
 
     private val newsRepository by lazy(UsageEvents.Event.NONE) { RequestRepository(RequestApiImpl(this)) }
@@ -62,16 +73,20 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //makeCurrentFragment(mainFragment)
+        requestAppPermissions()
         if (openText() != null) {
-            mainViewModel.setBaseURI(openText()!!)
+            if (hasReadPermissions()) {
+                mainViewModel.setBaseURI(openText()!!)
+            }
         }
         mainViewModel.baseURI.observe(this, Observer {
-            saveText(it)
+            if (hasWritePermissions()) {
+                saveText(it)
+            }
             newsRepository.updateURI(it)
             loadPlace()
         })
     }
-
 
     fun loadPlace() {
         val disposable = newsRepository.loadListGson().subscribeOn(Schedulers.io())
@@ -190,7 +205,7 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     // открытие файла
-    fun openText():String? {
+    fun openText(): String? {
         var fin: FileInputStream? = null
         var text: String? = null
         try {
@@ -225,5 +240,26 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                 Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun requestAppPermissions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return
+        }
+        if (hasReadPermissions() && hasWritePermissions()) {
+            return
+        }
+        ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ), REQUEST_WRITE_STORAGE_REQUEST_CODE) // your request code
+    }
+
+    private fun hasReadPermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(baseContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun hasWritePermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(baseContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 }
