@@ -58,11 +58,6 @@ class CameraFragment : Fragment() {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-            if (allPermissionsGranted()) {
-                startCamera()
-            } else {
-                cameraInteractor?.onBack()
-            }
         }
 
         // Setup the listener for take photo button

@@ -2,6 +2,7 @@ package com.example.photolink
 
 import android.Manifest
 import android.app.usage.UsageEvents
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,8 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -21,20 +24,11 @@ import com.example.photolink.api.RequestRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.FileInputStream
-import android.app.Activity
-
-import androidx.core.app.ActivityCompat
-
-import android.content.pm.PackageManager
-
-import androidx.core.content.ContextCompat
-
-import android.os.Build
-import androidx.activity.result.contract.ActivityResultContracts
 
 
 class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, CameraInteractor, DescriptionInteractor, ServerSettingsInteractor {
@@ -81,7 +75,6 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
             }
         }
         mainViewModel.baseURI.observe(this, Observer {
-            supportFragmentManager.popBackStack()
             if (hasWritePermissions()) {
                 saveText(it)
             }
@@ -100,7 +93,6 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
                     makeCurrentFragment(startFragment)
                 }, {
                     AlertDialog.Builder(this).setMessage("Ошибка загрузки").setMessage(it.message).show()
-
                 }
                 )//.updateListPost(news as MutableList<Post>)}
         compositeDisposable.add(disposable)
@@ -143,6 +135,11 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
             supportFragmentManager.beginTransaction().replace(R.id.nav_frame, fragment).addToBackStack(null).commit()
         }
         mainViewModel.addPlace(name)
+    }
+
+    fun onStateDefoltFragment() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        mainViewModel.startMain()
     }
 
     override fun onRefreshPlace() {
@@ -212,11 +209,19 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
             it.toFile().delete()
         }
         compositeDisposable.clear()
+
         super.onStop()
     }
 
     override fun closeServerSettings() {
         onBackPressed()
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        for (fragment in supportFragmentManager.fragments) {
+            if (fragment != null) {
+                supportFragmentManager.beginTransaction().remove(fragment).commit()
+            }
+        }
+        mainViewModel.startMain()
     }
 
     // открытие файла
