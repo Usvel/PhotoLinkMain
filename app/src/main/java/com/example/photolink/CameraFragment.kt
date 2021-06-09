@@ -11,12 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
+import com.example.photolink.Model.IteamPlace
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -37,6 +39,8 @@ class CameraFragment : Fragment() {
 
     private lateinit var safeContext: Context
 
+    private var name: String? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         safeContext = context
@@ -47,11 +51,19 @@ class CameraFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+        val view = inflater.inflate(R.layout.fragment_camera, container, false)
+        name = requireArguments().getString(ARG_MESSAGE_CAMERA_NAME)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        name.let {
+            if (it != null) {
+                (activity as AppCompatActivity?)!!.supportActionBar?.title = name
+            }
+        }
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -100,7 +112,7 @@ class CameraFragment : Fragment() {
         })
     }
 
-    private fun startCamera() {
+    fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(safeContext)
 
         cameraProviderFuture.addListener(Runnable {
@@ -169,8 +181,17 @@ class CameraFragment : Fragment() {
     companion object {
         private const val TAG = "CameraXBasic"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val REQUEST_CODE_PERMISSIONS = 10
+        val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+
+        private const val ARG_MESSAGE_CAMERA_NAME = "nameCAMERA"
+        fun newInstance(name: String): CameraFragment {
+            val fragment = CameraFragment()
+            val arguments = Bundle()
+            arguments.putString(ARG_MESSAGE_CAMERA_NAME, name)
+            fragment.arguments = arguments
+            return fragment
+        }
     }
 }
 //класс для анализа

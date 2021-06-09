@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.photolink.CameraFragment.Companion.REQUEST_CODE_PERMISSIONS
 import com.example.photolink.Model.IteamPlace
 import com.example.photolink.api.RequestApiImpl
 import com.example.photolink.api.RequestRepository
@@ -150,7 +151,8 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
     }
 
     override fun onClickRow(name: String) {
-        supportFragmentManager.beginTransaction().replace(R.id.nav_frame, CameraFragment()).addToBackStack(null).commit()
+        val fragment = CameraFragment.newInstance(name)
+        supportFragmentManager.beginTransaction().replace(R.id.nav_frame, fragment).addToBackStack(null).commit()
         mainViewModel.addPlace(name)
     }
 
@@ -187,6 +189,21 @@ class MainActivity : AppCompatActivity(), PlaceInteractor, RowInteractor, Camera
             onBackPressed()
         } else {
             AlertDialog.Builder(this).setTitle("Ошибка доступа").setMessage("Нужен доступ к файлам").show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (supportFragmentManager.fragments.isNotEmpty()) {
+                if (supportFragmentManager.fragments.last() is CameraFragment) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        (supportFragmentManager.fragments.last() as CameraFragment).startCamera()
+                    }
+                    else{
+                        onBackPressed()}
+                }
+            }
         }
     }
 
