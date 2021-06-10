@@ -30,6 +30,8 @@ typealias LumaListener = (luma: Double) -> Unit
 
 class CameraFragment : Fragment() {
 
+    private var takePhoto = true
+
     private var cameraInteractor: CameraInteractor? = null
 
     private var imageCapture: ImageCapture? = null
@@ -73,7 +75,12 @@ class CameraFragment : Fragment() {
         }
 
         // Setup the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
+        camera_capture_button.setOnClickListener {
+            if (takePhoto) {
+                takePhoto = false
+                takePhoto()
+            }
+        }
 
         outputDirectory = getOutputDirectory()
 
@@ -107,6 +114,7 @@ class CameraFragment : Fragment() {
                 val msg = "Photo capture succeeded: $savedUri"
                 //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 Log.d(TAG, msg)
+                takePhoto = true
                 cameraInteractor?.onOpenDescription(savedUri)
             }
         })
