@@ -27,8 +27,13 @@ class ServerSettings : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settingsBtn.setOnClickListener{
-            if(!baseEditText.text.isEmpty()){
+        mainViewModel.baseURI.observe(viewLifecycleOwner, {
+            it.let {
+                baseEditText.setText(it)
+            }
+        })
+        settingsBtn.setOnClickListener {
+            if (!baseEditText.text.isEmpty()) {
                 mainViewModel.setBaseURI(baseEditText.text.toString())
                 serverSettingsInteractor?.closeServerSettings()
             }
@@ -36,8 +41,8 @@ class ServerSettings : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_server_settings, container, false)
