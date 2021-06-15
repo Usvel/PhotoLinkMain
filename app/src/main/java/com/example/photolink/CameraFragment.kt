@@ -104,13 +104,15 @@ class CameraFragment : Fragment() {
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
+        Log.d(TAG, "Delay start")
         imageCapture.takePicture(
                 outputOptions, ContextCompat.getMainExecutor(safeContext), object : ImageCapture.OnImageSavedCallback {
             override fun onError(exc: ImageCaptureException) {
                 Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
             }
-
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                Toast.makeText(context, "DELAY", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Delay finish")
                 val savedUri = Uri.fromFile(photoFile)
                 val msg = "Photo capture succeeded: $savedUri"
                 //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -118,6 +120,7 @@ class CameraFragment : Fragment() {
                 takePhoto = true
                 cameraInteractor?.onOpenDescription(savedUri)
             }
+
         })
     }
 
@@ -150,18 +153,13 @@ class CameraFragment : Fragment() {
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
+            // Unbind use cases before rebinding
+            cameraProvider.unbindAll()
             try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                         this, cameraSelector, preview, imageCapture)
-                //для анализа
-//                cameraProvider.bindToLifecycle(
-//                        this, cameraSelector, preview, imageCapture, imageAnalyzer)
-
 
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
